@@ -30,13 +30,24 @@ public class CommandeService {
     }
 
     public Commande update(Long id, Commande commande) {
-        Optional<Commande> existingCommande = commandeRepository.findById(id);
-        if (existingCommande.isPresent()) {
-            return commandeRepository.save(commande);
+        Optional<Commande> existingCommandeOpt = commandeRepository.findById(id);
+
+        if (existingCommandeOpt.isPresent()) {
+            Commande existingCommande = existingCommandeOpt.get();
+
+            // Update fields manually
+            existingCommande.setDescription(commande.getDescription());
+            existingCommande.setQuantity(commande.getQuantity());
+            existingCommande.setDate(commande.getDate());
+            existingCommande.setMontant(commande.getMontant());
+
+            // Now save the updated existing entity
+            return commandeRepository.save(existingCommande);
         } else {
             throw new IllegalArgumentException("Commande with ID " + id + " does not exist");
         }
     }
+
 
     public void delete(Long id) {
         if (commandeRepository.existsById(id)) {
