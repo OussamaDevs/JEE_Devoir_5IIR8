@@ -2,16 +2,33 @@ package iir5.devoirjee.web.controller;
 
 import iir5.devoirjee.entity.Commande;
 import iir5.devoirjee.service.CommandeService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/commandes")
+@RefreshScope
 public class CommandeController {
     @Autowired
     private CommandeService commandeService;
+
+    @Value("${mes-config-ms.commandes-last}")
+    private int commandesLast;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Commandes Last: " + commandesLast);
+    }
+
+    @GetMapping("/commandesLast")
+    public String getCommandesLast() {
+        return "Commandes Last: " + commandesLast;
+    }
 
     @GetMapping(path = "/index")
     public List<Commande> getAllCommandes() {
